@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kaynak Ekle</title>
+  </head>
+  <body>
+    <h1>Kaynak Ekle</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ formset }}
+      <input type="submit" value="Kaydet">
+    </form>
+  </body>
+</html>

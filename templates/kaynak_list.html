@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kaynak Listesi</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        
+        table, th, td {
+            border: 1px solid black;
+        }
+        
+        th, td {
+            padding: 5px;
+        }
+        
+        .form-container {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_table }}
+            <button type="submit">Kaydet</button>
+        </form>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Kaynak No</th>
+                <th>Kaynak Yöntemi</th>
+                <th>Kaynakçı Adı</th>
+                <th>WPS No</th>
+                <th>NDT Yöntem</th>
+                <th>NDT Sonucu</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for kaynak in kaynaklar %}
+            <tr>
+                <td>{{ kaynak.kaynak_no }}</td>
+                <td>{{ kaynak.kaynak_yontemi }}</td>
+                <td>{{ kaynak.kaynakci_adi }}</td>
+                <td>{{ kaynak.wps_no }}</td>
+                <td>{{ kaynak.ndt_yontem }}</td>
+                <td>{{ kaynak.ndt_sonucu }}</td>
+                <td>
+                    <a href="{% url 'kaynak_edit' kaynak.pk %}">Düzenle</a> |
+                    <a href="{% url 'kaynak_delete' kaynak.pk %}">Sil</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <script>
+        const forms = document.getElementsByTagName('form');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+                const formData = new FormData(form);
+                fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();  // Sayfayı yenile
+                    } else {
+                        console.log('Form validation failed:', data.errors);
+                    }
+                })
+                .catch(error => console.error('Form submission error:', error));
+            });
+        });
+    </script>
+</body>
+</html>
